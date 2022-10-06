@@ -8,7 +8,13 @@ function Planets() {
 
   useEffect(() => {
     if (scene) {
+      const sunMaterial = new StandardMaterial('sunMaterial', scene);
+      sunMaterial.emissiveTexture = new Texture('assets/images/sun.jpg', scene);
+      sunMaterial.diffuseColor = Color3.Black();
+      sunMaterial.specularColor = Color3.Black();
+
       const sun = MeshBuilder.CreateSphere('sun', { segments: 16, diameter: 4 }, scene);
+      sun.material = sunMaterial;
 
       const planetMaterial = new StandardMaterial('planetMaterial', scene);
       planetMaterial.diffuseTexture = new Texture('assets/images/sand.png', scene);

@@ -1,6 +1,6 @@
 import React from 'react';
 import SceneContainer from 'babylonjs-hook';
-import { HemisphericLight, Scene, Vector3, ArcRotateCamera, Color3, Color4 } from '@babylonjs/core';
+import { HemisphericLight, Scene, Vector3, ArcRotateCamera, Color3, Color4, PointLight } from '@babylonjs/core';
 import Planets from './Planets';
 
 function SceneComponent() {
@@ -11,6 +11,9 @@ function SceneComponent() {
     const light = new HemisphericLight('light', Vector3.Up(), scene);
     light.intensity = 0.5;
     light.groundColor = Color3.Blue();
+
+    const sunLight = new PointLight('sunLight', Vector3.Zero(), scene);
+    sunLight.intensity = 2;
 
     const camera = new ArcRotateCamera('camera', 0, 0, 15, Vector3.Zero(), scene);
     camera.lowerRadiusLimit = 6;
