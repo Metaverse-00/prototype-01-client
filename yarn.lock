@@ -1082,6 +1082,11 @@
   resolved "https://registry.yarnpkg.com/@babylonjs/core/-/core-5.26.1.tgz#ad5e1298bd4000a8b7e9762a90a52ea5a9272efb"
   integrity sha512-WU1Ks+CkDMdOPO7WZ8r1dA+CfGT859oRJhSIyKia7dIDw3CBt2JuqjlqVcw+SpaReYkrqnfaY1HwiwKQqSBfGw==
 
+"@babylonjs/gui@^5.26.1":
+  version "5.26.1"
+  resolved "https://registry.yarnpkg.com/@babylonjs/gui/-/gui-5.26.1.tgz#0a6d4cd89f95cc877cfab04edae5670e8d8ab725"
+  integrity sha512-hX21QfUh6fSTvtGwvz7xc4wS1wLl/0Paew9JvpB63hJd8c73Kg77NEUuD6MpdJkmyC7tntNqXBxNlnldKPTD2A==
+
 "@bcoe/v8-coverage@^0.2.3":
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
@@ -7271,6 +7276,13 @@ react-app-polyfill@^3.0.0:
     regenerator-runtime "^0.13.9"
     whatwg-fetch "^3.6.2"
 
+react-babylonjs@^3.1.11:
+  version "3.1.11"
+  resolved "https://registry.yarnpkg.com/react-babylonjs/-/react-babylonjs-3.1.11.tgz#d2528fc2eeb260372516ea1bbfa8567f4554b01f"
+  integrity sha512-+VguzREkNEBzLZwqKJ4WePRJThDbXypBcjlu/uNwz9qpIE/o3eNuItqwOfQGqQRvs2AujZ2qdrJ8V/g588cgew==
+  dependencies:
+    react-reconciler "^0.27.0"
+
 react-dev-utils@^12.0.1:
   version "12.0.1"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-12.0.1.tgz#ba92edb4a1f379bd46ccd6bcd4e7bc398df33e73"
@@ -7328,6 +7340,14 @@ react-is@^18.0.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
+
+react-reconciler@^0.27.0:
+  version "0.27.0"
+  resolved "https://registry.yarnpkg.com/react-reconciler/-/react-reconciler-0.27.0.tgz#360124fdf2d76447c7491ee5f0e04503ed9acf5b"
+  integrity sha512-HmMDKciQjYmBRGuuhIaKA1ba/7a+UsM5FzOZsMO2JYHt9Jh8reCb7j1eDC95NOyUlKM9KRyvdx0flBuDvYSBoA==
+  dependencies:
+    loose-envify "^1.1.0"
+    scheduler "^0.21.0"
 
 react-refresh@^0.11.0:
   version "0.11.0"
@@ -7685,6 +7705,13 @@ saxes@^5.0.1:
   integrity sha512-5LBh1Tls8c9xgGjw3QrMwETmTMVk0oFgvrFSvWx62llR2hcEInrKNZ2GZCCuuy2lvWrdl5jhbpeqc5hRYKFOcw==
   dependencies:
     xmlchars "^2.2.0"
+
+scheduler@^0.21.0:
+  version "0.21.0"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.21.0.tgz#6fd2532ff5a6d877b6edb12f00d8ab7e8f308820"
+  integrity sha512-1r87x5fz9MXqswA2ERLo0EbOAU74DpIUO090gIasYTqlVoJeMcl+Z1Rg7WHz+qtPujhS/hGIt9kxZOYBV3faRQ==
+  dependencies:
+    loose-envify "^1.1.0"
 
 scheduler@^0.23.0:
   version "0.23.0"
