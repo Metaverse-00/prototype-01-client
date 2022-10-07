@@ -16,12 +16,14 @@ function Planets() {
       const sun = MeshBuilder.CreateSphere('sun', { segments: 16, diameter: 4 }, scene);
       sun.material = sunMaterial;
 
-      const planetMaterial = new StandardMaterial('planetMaterial', scene);
-      planetMaterial.diffuseTexture = new Texture('assets/images/sand.png', scene);
-      planetMaterial.specularColor = Color3.Black();
-
+      const images = ['sand.png', 'dark_rock.png', 'brown_rock.png'];
       const speeds = [0.01, -0.01, 0.005];
+
       for (let i = 0; i < 3; i++) {
+        const planetMaterial = new StandardMaterial('planetMaterial', scene);
+        planetMaterial.diffuseTexture = new Texture(`assets/images/${images[i]}`, scene);
+        planetMaterial.specularColor = Color3.Black();
+
         const planet = MeshBuilder.CreateSphere(`planet${i}`, { segments: 16, diameter: 1 }, scene);
         planet.position.x = 2 * i + 4;
         planet.material = planetMaterial;

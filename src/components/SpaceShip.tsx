@@ -51,7 +51,7 @@ function SpaceShip() {
       }));
 
       const camera = scene.getCameraByName('camera') as ArcRotateCamera;
-
+      
       scene.onBeforeRenderObservable.add(() => {
         if (inputMap['w']) {
           spaceCraft?.forEach((mesh: AbstractMesh) => {
