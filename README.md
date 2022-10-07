@@ -35,7 +35,7 @@ To get a local copy up and running follow these simple example steps:
 
 Please make sure your cursor is focused by clicking once on the site and follow the navigation instructions below:
 
-`w`: forward
-`s`: backward
-`a`: left
-`d`: right
+`w` : forward <br />
+`s` : backward <br />
+`a` : left <br />
+`d` : right <br />
