@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SceneContainer from 'babylonjs-hook';
 import Planets from './Planets';
 import SpaceShip from './SpaceShip';
@@ -28,7 +28,7 @@ function SceneComponent() {
     const sunLight = new PointLight('sunLight', Vector3.Zero(), scene);
     sunLight.intensity = 2;
 
-    const camera = new ArcRotateCamera('camera', Math.PI / 2, Math.PI * 0.4, 35, Vector3.Zero(), scene);
+    const camera = new ArcRotateCamera('camera', Math.PI / 2, Math.PI * 0.4, 20, new Vector3(0, -5, 10), scene);
     camera.lowerRadiusLimit = 10;
     camera.upperRadiusLimit = 50;
 

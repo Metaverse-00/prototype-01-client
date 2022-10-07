@@ -1,7 +1,15 @@
 import '@babylonjs/loaders';
 import React, { useEffect } from 'react';
-import { useScene } from 'babylonjs-hook';
-import { SceneLoader, AbstractMesh, Vector3, ActionManager, ExecuteCodeAction, ActionEvent } from '@babylonjs/core';
+import { useScene, useCamera } from 'babylonjs-hook';
+import {
+  SceneLoader,
+  AbstractMesh,
+  Vector3,
+  ActionManager,
+  ExecuteCodeAction,
+  ActionEvent,
+  ArcRotateCamera
+} from '@babylonjs/core';
 
 function SpaceShip() {
 
@@ -42,14 +50,18 @@ function SpaceShip() {
         inputMap[e.sourceEvent.key as keyof KeyInput] = e.sourceEvent.type == 'keydown';
       }));
 
+      const camera = scene.getCameraByName('camera') as ArcRotateCamera;
+
       scene.onBeforeRenderObservable.add(() => {
         if (inputMap['w']) {
           spaceCraft?.forEach((mesh: AbstractMesh) => {
             mesh.moveWithCollisions(mesh.forward.scaleInPlace(-0.2));
+            camera.lockedTarget = mesh;
           });
         } else if (inputMap['s']) {
           spaceCraft?.forEach((mesh: AbstractMesh) => {
             mesh.moveWithCollisions(mesh.forward.scaleInPlace(0.2));
+            camera.lockedTarget = mesh;
           });
         }
         if (inputMap['a']) {
