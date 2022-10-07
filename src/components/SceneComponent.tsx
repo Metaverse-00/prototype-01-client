@@ -1,6 +1,7 @@
 import React from 'react';
 import SceneContainer from 'babylonjs-hook';
 import Planets from './Planets';
+import SpaceShip from './SpaceShip';
 import { 
   Scene, 
   Vector3, 
@@ -27,9 +28,9 @@ function SceneComponent() {
     const sunLight = new PointLight('sunLight', Vector3.Zero(), scene);
     sunLight.intensity = 2;
 
-    const camera = new ArcRotateCamera('camera', 0, 0, 15, Vector3.Zero(), scene);
-    camera.lowerRadiusLimit = 6;
-    camera.upperRadiusLimit = 20;
+    const camera = new ArcRotateCamera('camera', Math.PI / 2, Math.PI * 0.4, 35, Vector3.Zero(), scene);
+    camera.lowerRadiusLimit = 10;
+    camera.upperRadiusLimit = 50;
 
     const skyMaterial = new StandardMaterial('skyMaterial', scene);
     skyMaterial.reflectionTexture = new CubeTexture('assets/images/skybox/skybox', scene);
@@ -55,6 +56,7 @@ function SceneComponent() {
       renderChildrenWhenReady
     >
       <Planets />
+      <SpaceShip />
     </SceneContainer>
   )
 }

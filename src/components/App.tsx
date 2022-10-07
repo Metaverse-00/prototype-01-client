@@ -2,9 +2,6 @@ import React from 'react';
 import SceneComponent from './SceneComponent';
 
 function App() {
-
-  
-
   return (
     <>
       <SceneComponent />
