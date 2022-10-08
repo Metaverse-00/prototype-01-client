@@ -25,7 +25,7 @@ function SpaceShip() {
   useEffect(() => {
     if (scene) {
       let spaceCraft: AbstractMesh[];
-      SceneLoader.ImportMesh('', 'assets/models/', 'spaceCraft1.obj', scene,
+      SceneLoader.ImportMesh('', 'assets/models/', 'spaceCraft2.obj', scene,
         (meshes: AbstractMesh[]) => {
           spaceCraft = meshes;
           meshes.forEach((mesh: AbstractMesh) => {
