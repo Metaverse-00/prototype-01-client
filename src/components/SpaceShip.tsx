@@ -50,6 +50,8 @@ function SpaceShip() {
         inputMap[e.sourceEvent.key as keyof KeyInput] = e.sourceEvent.type == 'keydown';
       }));
 
+      const rotateAngle = 1;
+      const rotateRadian = rotateAngle * (Math.PI / 180);
       const camera = scene.getCameraByName('camera') as ArcRotateCamera;
       
       scene.onBeforeRenderObservable.add(() => {
@@ -66,12 +68,14 @@ function SpaceShip() {
         }
         if (inputMap['a']) {
           spaceCraft?.forEach((mesh: AbstractMesh) => {
-            mesh.rotate(Vector3.Up(), -0.02);
+            mesh.rotate(Vector3.Up(), -Math.abs(rotateRadian));
           });
+          camera.alpha += rotateRadian;
         } else if (inputMap['d']) {
           spaceCraft?.forEach((mesh: AbstractMesh) => {
-            mesh.rotate(Vector3.Up(), 0.02);
+            mesh.rotate(Vector3.Up(), rotateRadian);
           });
+          camera.alpha -= rotateRadian;
         }
       });
     }
