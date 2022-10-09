@@ -2,21 +2,25 @@ import React, { useState } from 'react';
 import SceneContainer from 'babylonjs-hook';
 import Planets from './Planets';
 import SpaceShip from './SpaceShip';
-import { 
-  Scene, 
-  Vector3, 
-  HemisphericLight, 
-  PointLight, 
-  ArcRotateCamera, 
-  Color3, 
-  Color4, 
-  MeshBuilder, 
-  StandardMaterial, 
+import {
+  Scene,
+  Vector3,
+  HemisphericLight,
+  PointLight,
+  ArcRotateCamera,
+  Color3,
+  Color4,
+  MeshBuilder,
+  StandardMaterial,
   CubeTexture,
   Texture
 } from '@babylonjs/core';
 
-function SceneComponent() {
+type SceneProps = {
+  isRoomEmpty: boolean;
+}
+
+function SceneComponent({ isRoomEmpty }: SceneProps) {
 
   const onSceneReady = (scene: Scene) => {
     scene.clearColor = new Color4(0, 0, 0, 1);
@@ -38,7 +42,7 @@ function SceneComponent() {
     skyMaterial.specularColor = Color3.Black();
     skyMaterial.diffuseColor = Color3.Black();
     skyMaterial.backFaceCulling = false;
-    
+
     const skyBox = MeshBuilder.CreateBox('skyBox', { size: 1000 }, scene);
     skyBox.infiniteDistance = true;
     skyBox.material = skyMaterial;
