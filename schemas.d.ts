@@ -1,6 +1,6 @@
 import { Schema, type, MapSchema } from '@colyseus/schema';
 
-declare class PlayerState extends Schema {
+export class PlayerState extends Schema {
 
   @type('string') name: string;
 
@@ -8,10 +8,8 @@ declare class PlayerState extends Schema {
 
 }
 
-declare class MainSpaceState extends Schema {
+export class MainSpaceState extends Schema {
 
   @type({ map: PlayerState }) players: MapSchema<PlayerState>;
 
 }
-
-export = MainSpaceState;
