@@ -1,7 +1,9 @@
 import '@babylonjs/loaders';
 import React, { useContext, useEffect } from 'react';
 import { RoomContext } from '../contexts/roomContext';
-import { PlayerState } from '../../schemas';
+import { InputContext, KeyInput } from '../contexts/inputContext';
+import * as Colyseus from 'colyseus.js';
+import { MainSpaceState, PlayerState } from '../../schemas';
 import { useScene } from 'babylonjs-hook';
 import {
   SceneLoader,
@@ -17,18 +19,14 @@ function SpaceShip() {
 
   const scene = useScene();
   const roomCtx = useContext(RoomContext);
+  const inputCtx = useContext(InputContext);
 
+  let room: Colyseus.Room<MainSpaceState>;
   let playerState: PlayerState;
-  if (roomCtx!.room) {
-    const { state, sessionId } = roomCtx!.room;
+  if (roomCtx) {
+    room = roomCtx.room!;
+    const { state, sessionId } = room;
     playerState = state.players.get(sessionId)!;
-  }
-
-  type KeyInput = {
-    w: boolean,
-    a: boolean,
-    s: boolean,
-    d: boolean,
   }
 
   useEffect(() => {
@@ -51,12 +49,7 @@ function SpaceShip() {
 
       scene.actionManager = new ActionManager(scene);
 
-      const inputMap: KeyInput = {
-        w: false,
-        a: false,
-        s: false,
-        d: false,
-      };
+      const inputMap = inputCtx!.keyInputs[room.sessionId];
 
       scene.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnKeyDownTrigger, (e: ActionEvent) => {
         inputMap[e.sourceEvent.key as keyof KeyInput] = e.sourceEvent.type == 'keydown';
@@ -70,6 +63,7 @@ function SpaceShip() {
       const camera = scene.getCameraByName('camera') as ArcRotateCamera;
 
       scene.onBeforeRenderObservable.add(() => {
+
         if (inputMap['w']) {
           spaceCraft?.forEach((mesh: AbstractMesh) => {
             mesh.moveWithCollisions(mesh.forward.scaleInPlace(-0.2));

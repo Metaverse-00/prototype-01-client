@@ -7,8 +7,12 @@ export type KeyInput = {
   d: boolean,
 }
 
-export interface InputContextInterface {
+export type KeyInputMap = {
   [sessionId: string]: KeyInput
+}
+
+export interface InputContextInterface {
+  keyInputs: KeyInputMap
 }
 
 export const InputContext = createContext<InputContextInterface | null>(null);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as Colyseus from 'colyseus.js';
 import { DataChange } from '@colyseus/schema';
 import { MainSpaceState, PlayerState } from '../../schemas';
-import { InputContext, KeyInput } from '../contexts/inputContext';
+import { InputContext, KeyInputMap } from '../contexts/inputContext';
 import { RoomContext } from '../contexts/roomContext';
 import SceneComponent from './SceneComponent';
 import Backdrop from './Backdrop';
@@ -10,13 +10,22 @@ import Backdrop from './Backdrop';
 function App() {
 
   const [room, setRoom] = useState<Colyseus.Room<MainSpaceState> | null>(null);
-  const [keyInputs, setKeyInputs] = useState<KeyInput>({} as KeyInput);
+  const [keyInputs, setKeyInputs] = useState<KeyInputMap>({} as KeyInputMap);
 
   useEffect(() => {
     (async () => {
       try {
         const client = new Colyseus.Client('ws://localhost:2567');
         const room = await client.joinOrCreate<MainSpaceState>('main_space', { name: 'player01' });
+
+        setKeyInputs({
+          [room.sessionId]: {
+            w: false,
+            a: false,
+            s: false,
+            d: false,
+          }
+        });
 
         room.state.players.onAdd = (player: PlayerState, sessionId: string) => {
           console.log('player added with sessionId:', sessionId);
