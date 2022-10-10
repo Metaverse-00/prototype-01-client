@@ -22,12 +22,14 @@ function App() {
 
           if (players.size > 1) {
             if (currentPlayer) {
+              // applying callbacks on initial join
               room.state.players.forEach((player: PlayerState, sessionId: string) => {
                 player.onChange = (changes: DataChange<any>[]) => {
   
                 }
               });
             } else {
+              // applying callback on proceeding join
               player.onChange = (changes: DataChange<any>[]) => {
 
               }
