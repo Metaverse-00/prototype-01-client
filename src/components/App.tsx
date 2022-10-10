@@ -7,7 +7,7 @@ import Backdrop from './Backdrop';
 
 function App() {
 
-  const [isRoomEmpty, setIsRoomEmpty] = useState<boolean | undefined>();
+  const [room, setRoom] = useState<Colyseus.Room<MainSpaceState> | undefined>();
 
   useEffect(() => {
     (async () => {
@@ -17,17 +17,25 @@ function App() {
 
         room.state.players.onAdd = (player: PlayerState, sessionId: string) => {
           console.log('player added with sessionId:', sessionId);
+          const currentPlayer = room.sessionId === sessionId;
+          const { players } = room.state;
 
-          if (room.state.players.size > 1) {
-            setIsRoomEmpty(false);
-          } else {
-            setIsRoomEmpty(true);
-          }
+          if (players.size > 1) {
+            if (currentPlayer) {
+              room.state.players.forEach((player: PlayerState, sessionId: string) => {
+                player.onChange = (changes: DataChange<any>[]) => {
+  
+                }
+              });
+            } else {
+              player.onChange = (changes: DataChange<any>[]) => {
 
-          player.onChange = (changes: DataChange<any>[]) => {
-
+              }
+            }
           }
         }
+
+        setRoom(room);
       } catch (err) {
         console.log(err);
       }
@@ -36,8 +44,8 @@ function App() {
 
   return (
     <>
-      {isRoomEmpty !== undefined ?
-        <SceneComponent isRoomEmpty={isRoomEmpty} />
+      {room ?
+        <SceneComponent room={room} />
         :
         <Backdrop />
       }
