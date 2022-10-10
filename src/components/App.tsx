@@ -29,16 +29,18 @@ function App() {
 
                 }
               });
+              setRoom(room);
             } else {
               // applying callback on proceeding join
               player.onChange = (changes: DataChange<any>[]) => {
 
               }
             }
+          } else if (currentPlayer) {
+            setRoom(room);
           }
         }
 
-        setRoom(room);
       } catch (err) {
         console.log(err);
       }
