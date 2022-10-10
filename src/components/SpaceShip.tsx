@@ -1,6 +1,8 @@
 import '@babylonjs/loaders';
-import React, { useEffect } from 'react';
-import { useScene, useCamera } from 'babylonjs-hook';
+import React, { useContext, useEffect } from 'react';
+import { RoomContext } from '../contexts/roomContext';
+import { PlayerState } from '../../schemas';
+import { useScene } from 'babylonjs-hook';
 import {
   SceneLoader,
   AbstractMesh,
@@ -14,6 +16,13 @@ import {
 function SpaceShip() {
 
   const scene = useScene();
+  const roomCtx = useContext(RoomContext);
+
+  let playerState: PlayerState;
+  if (roomCtx!.room) {
+    const { state, sessionId } = roomCtx!.room;
+    playerState = state.players.get(sessionId)!;
+  }
 
   type KeyInput = {
     w: boolean,
@@ -28,9 +37,15 @@ function SpaceShip() {
       SceneLoader.ImportMesh('', 'assets/models/', 'spaceCraft2.obj', scene,
         (meshes: AbstractMesh[]) => {
           spaceCraft = meshes;
+          const { rotation, position: { x, y, z } } = playerState;
+
           meshes.forEach((mesh: AbstractMesh) => {
-            mesh.position = new Vector3(0, -5, 10);
+            mesh.position = new Vector3(x, y, z);
             mesh.scaling = new Vector3(0.2, 0.2, 0.2);
+
+            const rotateAngle = rotation;
+            const rotateRadian = rotateAngle * (Math.PI / 180);
+            mesh.rotate(Vector3.Up(), rotateRadian);
           });
         });
 
@@ -53,7 +68,7 @@ function SpaceShip() {
       const rotateAngle = 1;
       const rotateRadian = rotateAngle * (Math.PI / 180);
       const camera = scene.getCameraByName('camera') as ArcRotateCamera;
-      
+
       scene.onBeforeRenderObservable.add(() => {
         if (inputMap['w']) {
           spaceCraft?.forEach((mesh: AbstractMesh) => {
