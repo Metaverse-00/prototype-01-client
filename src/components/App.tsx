@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as Colyseus from 'colyseus.js';
 import { DataChange } from '@colyseus/schema';
 import { MainSpaceState, PlayerState } from '../../schemas';
+import { InputContext, KeyInput } from '../contexts/inputContext';
 import { RoomContext } from '../contexts/roomContext';
 import SceneComponent from './SceneComponent';
 import Backdrop from './Backdrop';
@@ -9,6 +10,7 @@ import Backdrop from './Backdrop';
 function App() {
 
   const [room, setRoom] = useState<Colyseus.Room<MainSpaceState> | null>(null);
+  const [keyInputs, setKeyInputs] = useState<KeyInput>({} as KeyInput);
 
   useEffect(() => {
     (async () => {
@@ -49,11 +51,13 @@ function App() {
 
   return (
     <RoomContext.Provider value={{ room }}>
-      {room ?
-        <SceneComponent />
-        :
-        <Backdrop />
-      }
+      <InputContext.Provider value={{ keyInputs }}>
+        {room ?
+          <SceneComponent />
+          :
+          <Backdrop />
+        }
+      </InputContext.Provider>
     </RoomContext.Provider>
   );
 }
