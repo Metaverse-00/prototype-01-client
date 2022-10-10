@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { RoomContext } from '../contexts/roomContext';
+import { CameraState } from '../../schemas';
 import SceneContainer from 'babylonjs-hook';
 import Planets from './Planets';
 import SpaceShip from './SpaceShip';
@@ -19,7 +20,13 @@ import {
 
 function SceneComponent() {
 
-  const room = useContext(RoomContext);
+  const roomCtx = useContext(RoomContext);
+
+  let cameraState: CameraState;
+  if (roomCtx!.room) {
+    const { state, sessionId } = roomCtx!.room;
+    cameraState = state.cameras.get(sessionId)!;
+  }
 
   const onSceneReady = (scene: Scene) => {
     scene.clearColor = new Color4(0, 0, 0, 1);
@@ -31,7 +38,8 @@ function SceneComponent() {
     const sunLight = new PointLight('sunLight', Vector3.Zero(), scene);
     sunLight.intensity = 2;
 
-    const camera = new ArcRotateCamera('camera', Math.PI / 2, Math.PI * 0.4, 20, new Vector3(0, -5, 10), scene);
+    const { alpha, beta, radius, position: { x, y, z } } = cameraState;
+    const camera = new ArcRotateCamera('camera', alpha, beta, radius, new Vector3(x, y, z), scene);
     camera.lowerRadiusLimit = 10;
     camera.upperRadiusLimit = 50;
 
