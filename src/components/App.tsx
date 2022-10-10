@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import * as Colyseus from 'colyseus.js';
 import { DataChange } from '@colyseus/schema';
 import { MainSpaceState, PlayerState } from '../../schemas';
+import { RoomContext } from '../contexts/roomContext';
 import SceneComponent from './SceneComponent';
 import Backdrop from './Backdrop';
 
 function App() {
 
-  const [room, setRoom] = useState<Colyseus.Room<MainSpaceState> | undefined>();
+  const [room, setRoom] = useState<Colyseus.Room<MainSpaceState> | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -25,7 +26,7 @@ function App() {
               // applying callbacks on initial join
               room.state.players.forEach((player: PlayerState, sessionId: string) => {
                 player.onChange = (changes: DataChange<any>[]) => {
-  
+
                 }
               });
             } else {
@@ -45,13 +46,13 @@ function App() {
   }, []);
 
   return (
-    <>
+    <RoomContext.Provider value={{ room }}>
       {room ?
-        <SceneComponent room={room} />
+        <SceneComponent />
         :
         <Backdrop />
       }
-    </>
+    </RoomContext.Provider>
   );
 }
 

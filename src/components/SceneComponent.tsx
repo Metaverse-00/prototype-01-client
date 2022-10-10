@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { RoomContext } from '../contexts/roomContext';
 import SceneContainer from 'babylonjs-hook';
 import Planets from './Planets';
 import SpaceShip from './SpaceShip';
@@ -16,11 +17,9 @@ import {
   Texture
 } from '@babylonjs/core';
 
-type SceneProps = {
-  isRoomEmpty: boolean;
-}
+function SceneComponent() {
 
-function SceneComponent({ isRoomEmpty }: SceneProps) {
+  const room = useContext(RoomContext);
 
   const onSceneReady = (scene: Scene) => {
     scene.clearColor = new Color4(0, 0, 0, 1);
