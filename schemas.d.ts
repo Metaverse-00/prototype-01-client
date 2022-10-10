@@ -16,6 +16,8 @@ export class PlayerState extends Schema {
 
   @type("number") rotation: number;
 
+  @type(KeyInputState) keyInput: KeyInputState;
+
   constructor(
     _name: string,
     _position: PositionState,
@@ -33,6 +35,18 @@ export class PositionState extends Schema {
   @type("number") z: number;
 
   constructor(_x: number, _y: number, _z: number);
+
+}
+
+export class KeyInputState extends Schema {
+
+  @type("boolean") w: boolean;
+
+  @type("boolean") s: boolean;
+
+  @type("boolean") a: boolean;
+
+  @type("boolean") d: boolean;
 
 }
 
