@@ -12,7 +12,7 @@ function App() {
   useEffect(() => {
     (async () => {
       try {
-        const client = new Colyseus.Client('ws://localhost:2567');
+        const client = new Colyseus.Client(process.env.SERVER_URL);
         const room = await client.joinOrCreate<MainSpaceState>('main_space', { name: 'player' });
         room.onStateChange(() => setRoom(room));
       } catch (err) {
