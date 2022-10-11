@@ -1,6 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { RoomContext } from '../contexts/roomContext';
-import { CameraState } from '../../schemas';
+import { CameraState, PlayerState } from '../../schemas';
 import SceneContainer from 'babylonjs-hook';
 import Planets from './Planets';
 import SpaceShip from './SpaceShip';
@@ -22,10 +22,21 @@ function SceneComponent() {
 
   const roomCtx = useContext(RoomContext);
 
+  type PlayerInfo = {
+    sessionId: string,
+    player: PlayerState
+  }
+
   let cameraState: CameraState;
+  let playerInfoArr: PlayerInfo[] = [];
+
   if (roomCtx!.room) {
     const { state, sessionId } = roomCtx!.room;
     cameraState = state.cameras.get(sessionId)!;
+
+    state.players.forEach((player: PlayerState, sessionId: string) => {
+      playerInfoArr.push({ player, sessionId });
+    });
   }
 
   const onSceneReady = (scene: Scene) => {
@@ -59,6 +70,16 @@ function SceneComponent() {
     camera.attachControl(canvas, true);
   }
 
+  const spaceShips = playerInfoArr.map((info: PlayerInfo, i: number) => {
+    return (
+      <SpaceShip
+        key={i}
+        sessionId={info.sessionId}
+        playerState={info.player}
+      />
+    );
+  });
+
   return (
     <SceneContainer
       id='canvas'
@@ -67,9 +88,9 @@ function SceneComponent() {
       renderChildrenWhenReady
     >
       <Planets />
-      <SpaceShip />
+      {spaceShips}
     </SceneContainer>
-  )
+  );
 }
 
 export default SceneComponent;

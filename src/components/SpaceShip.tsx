@@ -1,7 +1,7 @@
 import '@babylonjs/loaders';
 import React, { useContext, useEffect } from 'react';
 import { RoomContext } from '../contexts/roomContext';
-import { InputContext, KeyInput } from '../contexts/inputContext';
+import { KeyInput } from '../contexts/inputContext';
 import * as Colyseus from 'colyseus.js';
 import { MainSpaceState, PlayerState } from '../../schemas';
 import { useScene } from 'babylonjs-hook';
@@ -12,21 +12,42 @@ import {
   ActionManager,
   ExecuteCodeAction,
   ActionEvent,
-  ArcRotateCamera
+  ArcRotateCamera,
+  Scene
 } from '@babylonjs/core';
+import { DataChange } from '@colyseus/schema';
 
-function SpaceShip() {
+type SpaceShipProps = {
+  sessionId: string,
+  playerState: PlayerState
+}
+
+function SpaceShip({ sessionId, playerState }: SpaceShipProps) {
 
   const scene = useScene();
   const roomCtx = useContext(RoomContext);
-  const inputCtx = useContext(InputContext);
+  const room = roomCtx!.room!;
 
-  let room: Colyseus.Room<MainSpaceState>;
-  let playerState: PlayerState;
-  if (roomCtx) {
-    room = roomCtx.room!;
-    const { state, sessionId } = room;
-    playerState = state.players.get(sessionId)!;
+  const sendKeyInputs = (scene: Scene, room: Colyseus.Room<MainSpaceState>) => {
+    const inputMap: KeyInput = {
+      w: false,
+      a: false,
+      s: false,
+      d: false,
+    };
+
+    scene.actionManager = new ActionManager(scene);
+
+    scene.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnKeyDownTrigger, (e: ActionEvent) => {
+      inputMap[e.sourceEvent.key as keyof KeyInput] = e.sourceEvent.type == 'keydown';
+    }));
+    scene.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnKeyUpTrigger, (e: ActionEvent) => {
+      inputMap[e.sourceEvent.key as keyof KeyInput] = e.sourceEvent.type == 'keydown';
+    }));
+
+    scene.registerBeforeRender(() => {
+      room.send('key_input', inputMap);
+    });
   }
 
   useEffect(() => {
@@ -34,8 +55,8 @@ function SpaceShip() {
       let spaceCraft: AbstractMesh[];
       SceneLoader.ImportMesh('', 'assets/models/', 'spaceCraft2.obj', scene,
         (meshes: AbstractMesh[]) => {
+          const { rotation, position: { x, y, z } } = playerState!;
           spaceCraft = meshes;
-          const { rotation, position: { x, y, z } } = playerState;
 
           meshes.forEach((mesh: AbstractMesh) => {
             mesh.position = new Vector3(x, y, z);
@@ -47,23 +68,45 @@ function SpaceShip() {
           });
         });
 
-      scene.actionManager = new ActionManager(scene);
+      // ----- send key inputs of current player to server ------ //
 
-      const inputMap = inputCtx!.keyInputs[room.sessionId];
+      if (room.sessionId === sessionId) {
+        sendKeyInputs(scene, room);
+      }
 
-      scene.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnKeyDownTrigger, (e: ActionEvent) => {
-        inputMap[e.sourceEvent.key as keyof KeyInput] = e.sourceEvent.type == 'keydown';
-      }));
-      scene.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnKeyUpTrigger, (e: ActionEvent) => {
-        inputMap[e.sourceEvent.key as keyof KeyInput] = e.sourceEvent.type == 'keydown';
+      // ----- display animations from server data ----- //
+
+      const keyInput: KeyInput = {
+        w: false,
+        a: false,
+        s: false,
+        d: false,
+      };
+
+      const player = room.state.players.get(sessionId);
+
+      player!.keyInput.onChange = (changes: DataChange<any>[]) => {
+        changes.forEach((change: DataChange<any>) => {
+          keyInput[change.field as keyof KeyInput] = change.value
+        });
+      }
+
+      let inputMap: KeyInput = {
+        w: false,
+        a: false,
+        s: false,
+        d: false,
+      };
+
+      scene.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnEveryFrameTrigger, () => {
+        inputMap = keyInput;
       }));
 
       const rotateAngle = 1;
       const rotateRadian = rotateAngle * (Math.PI / 180);
       const camera = scene.getCameraByName('camera') as ArcRotateCamera;
 
-      scene.onBeforeRenderObservable.add(() => {
-
+      scene.registerBeforeRender(() => {
         if (inputMap['w']) {
           spaceCraft?.forEach((mesh: AbstractMesh) => {
             mesh.moveWithCollisions(mesh.forward.scaleInPlace(-0.2));

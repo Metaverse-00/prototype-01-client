@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import * as Colyseus from 'colyseus.js';
-import { DataChange } from '@colyseus/schema';
-import { MainSpaceState, PlayerState } from '../../schemas';
-import { InputContext, KeyInputMap } from '../contexts/inputContext';
+import { MainSpaceState } from '../../schemas';
 import { RoomContext } from '../contexts/roomContext';
 import SceneComponent from './SceneComponent';
 import Backdrop from './Backdrop';
@@ -10,48 +8,13 @@ import Backdrop from './Backdrop';
 function App() {
 
   const [room, setRoom] = useState<Colyseus.Room<MainSpaceState> | null>(null);
-  const [keyInputs, setKeyInputs] = useState<KeyInputMap>({} as KeyInputMap);
 
   useEffect(() => {
     (async () => {
       try {
         const client = new Colyseus.Client('ws://localhost:2567');
-        const room = await client.joinOrCreate<MainSpaceState>('main_space', { name: 'player01' });
-
-        setKeyInputs({
-          [room.sessionId]: {
-            w: false,
-            a: false,
-            s: false,
-            d: false,
-          }
-        });
-
-        room.state.players.onAdd = (player: PlayerState, sessionId: string) => {
-          console.log('player added with sessionId:', sessionId);
-          const currentPlayer = room.sessionId === sessionId;
-          const { players } = room.state;
-
-          if (players.size > 1) {
-            if (currentPlayer) {
-              // applying callbacks on initial join
-              room.state.players.forEach((player: PlayerState, sessionId: string) => {
-                player.onChange = (changes: DataChange<any>[]) => {
-
-                }
-              });
-              setRoom(room);
-            } else {
-              // applying callback on proceeding join
-              player.onChange = (changes: DataChange<any>[]) => {
-
-              }
-            }
-          } else if (currentPlayer) {
-            setRoom(room);
-          }
-        }
-
+        const room = await client.joinOrCreate<MainSpaceState>('main_space', { name: 'player' });
+        room.onStateChange(() => setRoom(room));
       } catch (err) {
         console.log(err);
       }
@@ -60,13 +23,11 @@ function App() {
 
   return (
     <RoomContext.Provider value={{ room }}>
-      <InputContext.Provider value={{ keyInputs }}>
         {room ?
           <SceneComponent />
           :
           <Backdrop />
         }
-      </InputContext.Provider>
     </RoomContext.Provider>
   );
 }
