@@ -12,6 +12,7 @@ function App() {
   useEffect(() => {
     (async () => {
       try {
+        console.log(process.env.REACT_APP_SERVER_URL)
         const client = new Colyseus.Client(process.env.REACT_APP_SERVER_URL);
         const room = await client.joinOrCreate<MainSpaceState>('main_space', { name: 'player' });
         room.onStateChange(() => setRoom(room));
