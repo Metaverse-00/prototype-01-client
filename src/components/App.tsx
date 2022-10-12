@@ -16,7 +16,6 @@ function App() {
       try {
         const res = await fetch(ENV_URL);
         const SERVER_URL = await res.json();
-        console.log(SERVER_URL)
         const client = new Colyseus.Client(SERVER_URL);
         const room = await client.joinOrCreate<MainSpaceState>('main_space', { name: 'player' });
         room.onStateChange(() => setRoom(room));
