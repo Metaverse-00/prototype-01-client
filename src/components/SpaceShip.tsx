@@ -1,7 +1,6 @@
 import '@babylonjs/loaders';
 import React, { useContext, useEffect } from 'react';
 import { RoomContext } from '../contexts/roomContext';
-import { KeyInput } from '../contexts/inputContext';
 import * as Colyseus from 'colyseus.js';
 import { MainSpaceState, PlayerState } from '../../schemas';
 import { useScene } from 'babylonjs-hook';
@@ -27,6 +26,13 @@ function SpaceShip({ sessionId, playerState }: SpaceShipProps) {
   const scene = useScene();
   const roomCtx = useContext(RoomContext);
   const room = roomCtx!.room!;
+
+  type KeyInput = {
+    w: boolean,
+    a: boolean,
+    s: boolean,
+    d: boolean,
+  }
 
   const getMesh = () => {
     const { A, B, C } = room.state.labels;
@@ -65,7 +71,7 @@ function SpaceShip({ sessionId, playerState }: SpaceShipProps) {
     if (scene) {
       let spaceCraft: AbstractMesh[];
       const mesh = getMesh();
-      
+
       SceneLoader.ImportMesh('', 'assets/models/', mesh, scene,
         (meshes: AbstractMesh[]) => {
           const { rotation, position: { x, y, z } } = playerState!;
@@ -74,13 +80,13 @@ function SpaceShip({ sessionId, playerState }: SpaceShipProps) {
           meshes.forEach((mesh: AbstractMesh) => {
             mesh.position = new Vector3(x, y, z);
             mesh.scaling = new Vector3(0.2, 0.2, 0.2);
-  
+
             const rotateAngle = rotation;
             const rotateRadian = rotateAngle * (Math.PI / 180);
             mesh.rotate(Vector3.Up(), rotateRadian);
           });
         });
-        
+
       // ----- send key inputs of current player to server ----- //
 
       if (room.sessionId === sessionId) {
