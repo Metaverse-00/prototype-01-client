@@ -28,6 +28,19 @@ function SpaceShip({ sessionId, playerState }: SpaceShipProps) {
   const roomCtx = useContext(RoomContext);
   const room = roomCtx!.room!;
 
+  const getMesh = () => {
+    const { A, B, C } = room.state.labels;
+
+    switch (sessionId) {
+      case A:
+        return 'spaceCraft1.obj';
+      case B:
+        return 'spaceCraft2.obj';
+      case C:
+        return 'spaceCraft3.obj';
+    }
+  }
+
   const sendKeyInputs = (scene: Scene, room: Colyseus.Room<MainSpaceState>) => {
     const inputMap: KeyInput = {
       w: false,
@@ -51,7 +64,9 @@ function SpaceShip({ sessionId, playerState }: SpaceShipProps) {
   useEffect(() => {
     if (scene) {
       let spaceCraft: AbstractMesh[];
-      SceneLoader.ImportMesh('', 'assets/models/', 'spaceCraft2.obj', scene,
+      const mesh = getMesh();
+      
+      SceneLoader.ImportMesh('', 'assets/models/', mesh, scene,
         (meshes: AbstractMesh[]) => {
           const { rotation, position: { x, y, z } } = playerState!;
           spaceCraft = meshes;
@@ -66,7 +81,7 @@ function SpaceShip({ sessionId, playerState }: SpaceShipProps) {
           });
         });
 
-      // ----- send key inputs of current player to server ------ //
+      // ----- send key inputs of current player to server ----- //
 
       if (room.sessionId === sessionId) {
         sendKeyInputs(scene, room);
