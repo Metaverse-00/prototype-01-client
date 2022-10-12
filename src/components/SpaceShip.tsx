@@ -55,8 +55,6 @@ function SpaceShip({ sessionId, playerState }: SpaceShipProps) {
       d: false,
     };
 
-    scene.actionManager = new ActionManager(scene);
-
     scene.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnKeyDownTrigger, (e: ActionEvent) => {
       inputMap[e.sourceEvent.key as keyof KeyInput] = e.sourceEvent.type == 'keydown';
       room.send('key_input', inputMap);
@@ -91,8 +89,6 @@ function SpaceShip({ sessionId, playerState }: SpaceShipProps) {
 
       if (room.sessionId === sessionId) {
         sendKeyInputs(scene, room);
-      } else {
-        scene.actionManager = new ActionManager(scene);
       }
 
       // ----- display animations from server data ----- //

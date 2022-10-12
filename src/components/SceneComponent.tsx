@@ -15,7 +15,8 @@ import {
   MeshBuilder,
   StandardMaterial,
   CubeTexture,
-  Texture
+  Texture,
+  ActionManager
 } from '@babylonjs/core';
 
 function SceneComponent() {
@@ -63,8 +64,9 @@ function SceneComponent() {
     skyBox.material = skyMaterial;
 
     const canvas = scene.getEngine().getRenderingCanvas();
-
     camera.attachControl(canvas, true);
+
+    scene.actionManager = new ActionManager(scene);
   }
 
   const spaceShips = playerArr.map((info: PlayerInfo, i: number) => {
