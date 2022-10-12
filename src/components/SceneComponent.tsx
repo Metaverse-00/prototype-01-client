@@ -1,7 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { RoomContext } from '../contexts/roomContext';
 import { CameraState, PlayerState } from '../../schemas';
-import SceneContainer from 'babylonjs-hook';
+import SceneContainer, { useScene } from 'babylonjs-hook';
 import Planets from './Planets';
 import SpaceShip from './SpaceShip';
 import {
@@ -27,17 +27,14 @@ function SceneComponent() {
     player: PlayerState
   }
 
-  let cameraState: CameraState;
-  let playerInfoArr: PlayerInfo[] = [];
+  const { state, sessionId } = roomCtx!.room!;
+  const cameraState = state.cameras.get(sessionId)!;
 
-  if (roomCtx!.room) {
-    const { state, sessionId } = roomCtx!.room;
-    cameraState = state.cameras.get(sessionId)!;
+  const playerArr: PlayerInfo[] = [];
 
-    state.players.forEach((player: PlayerState, sessionId: string) => {
-      playerInfoArr.push({ player, sessionId });
-    });
-  }
+  state.players.forEach((player: PlayerState, sessionId: string) => {
+    playerArr.push({ player, sessionId });
+  });
 
   const onSceneReady = (scene: Scene) => {
     scene.clearColor = new Color4(0, 0, 0, 1);
@@ -70,7 +67,8 @@ function SceneComponent() {
     camera.attachControl(canvas, true);
   }
 
-  const spaceShips = playerInfoArr.map((info: PlayerInfo, i: number) => {
+  const spaceShips = playerArr.map((info: PlayerInfo, i: number) => {
+    console.log('index:', i)
     return (
       <SpaceShip
         key={i}

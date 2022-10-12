@@ -74,17 +74,19 @@ function SpaceShip({ sessionId, playerState }: SpaceShipProps) {
           meshes.forEach((mesh: AbstractMesh) => {
             mesh.position = new Vector3(x, y, z);
             mesh.scaling = new Vector3(0.2, 0.2, 0.2);
-
+  
             const rotateAngle = rotation;
             const rotateRadian = rotateAngle * (Math.PI / 180);
             mesh.rotate(Vector3.Up(), rotateRadian);
           });
         });
-
+        
       // ----- send key inputs of current player to server ----- //
 
       if (room.sessionId === sessionId) {
         sendKeyInputs(scene, room);
+      } else {
+        scene.actionManager = new ActionManager(scene);
       }
 
       // ----- display animations from server data ----- //
@@ -143,6 +145,12 @@ function SpaceShip({ sessionId, playerState }: SpaceShipProps) {
           camera.alpha -= rotateRadian;
         }
       });
+
+      return () => {
+        spaceCraft.forEach((mesh: AbstractMesh) => {
+          mesh.dispose();
+        })
+      }
     }
   }, [scene]);
 

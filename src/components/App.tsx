@@ -13,12 +13,19 @@ function App() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(config.ENV_URL);
+        const res = await fetch(config.LOCAL_ENV);
         const SERVER_URL = await res.json();
         const client = new Colyseus.Client(SERVER_URL);
 
         const room = await client.joinOrCreate<MainSpaceState>('main_space', { name: 'player' });
-        room.onStateChange(() => setRoom(room));
+        room.onStateChange(() => {
+          // clone room instance to cause re-render
+          const roomClone = Object.create(
+            Object.getPrototypeOf(room),
+            Object.getOwnPropertyDescriptors(room)
+          );
+          setRoom(roomClone)
+        });
       } catch (err) {
         console.log(err);
       }
@@ -27,11 +34,11 @@ function App() {
 
   return (
     <RoomContext.Provider value={{ room }}>
-        {room ?
-          <SceneComponent />
-          :
-          <Backdrop />
-        }
+      {room ?
+        <SceneComponent />
+        :
+        <Backdrop />
+      }
     </RoomContext.Provider>
   );
 }
