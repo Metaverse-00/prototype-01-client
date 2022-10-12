@@ -13,7 +13,7 @@ function App() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch(config.LOCAL_ENV);
+        const res = await fetch(config.ENV_URL);
         const SERVER_URL = await res.json();
         const client = new Colyseus.Client(SERVER_URL);
 
