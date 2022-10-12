@@ -1,10 +1,22 @@
 import { Schema, type, MapSchema } from '@colyseus/schema';
 
 export class MainSpaceState extends Schema {
+  
+  @type(LabelState) labels = new LabelState();
 
   @type({ map: PlayerState }) players: MapSchema<PlayerState>;
 
   @type({ map: CameraState }) cameras: MapSchema<CameraState>;
+
+}
+
+export class LabelState extends Schema {
+
+  @type("string") A: string;
+
+  @type("string") B: string;
+
+  @type("string") C: string;
 
 }
 
