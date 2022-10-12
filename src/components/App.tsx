@@ -12,8 +12,9 @@ function App() {
   useEffect(() => {
     (async () => {
       try {
-        console.log(process.env.REACT_APP_SERVER_URL)
-        const client = new Colyseus.Client(process.env.REACT_APP_SERVER_URL);
+        const ENV_URL = 'https://astonishing-stroopwafel-02b744.netlify.app/.netlify/functions/env';
+        console.log(ENV_URL)
+        const client = new Colyseus.Client(ENV_URL);
         const room = await client.joinOrCreate<MainSpaceState>('main_space', { name: 'player' });
         room.onStateChange(() => setRoom(room));
       } catch (err) {
