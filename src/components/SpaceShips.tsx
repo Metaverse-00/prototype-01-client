@@ -16,30 +16,30 @@ import {
 } from '@babylonjs/core';
 import { DataChange } from '@colyseus/schema';
 
+type SpaceCrafts = {
+  [sessionId: string]: AbstractMesh[]
+}
+
+type KeyInput = {
+  w: boolean,
+  a: boolean,
+  s: boolean,
+  d: boolean,
+}
+
+type KeyInputs = {
+  [sessionId: string]: KeyInput
+}
+
 function SpaceShips() {
 
   const scene = useScene();
   const roomCtx = useContext(RoomContext);
   const room = roomCtx!.room!;
 
-  type SpaceCrafts = {
-    [sessionId: string]: AbstractMesh[]
-  }
-
-  type KeyInput = {
-    w: boolean,
-    a: boolean,
-    s: boolean,
-    d: boolean,
-  }
-
-  type KeyInputs = {
-    [sessionId: string]: KeyInput
-  }
-
   const getMesh = (sessionId: string) => {
     const { A, B, C } = room.state.labels;
-
+    
     switch (sessionId) {
       case A:
         return 'spaceCraft1.obj';
@@ -107,10 +107,7 @@ function SpaceShips() {
             keyInputs[sessionId][change.field as keyof KeyInput] = change.value
           });
         }
-
       });
-
-      // ----- send key inputs of current player to server ----- //
 
       sendKeyInputs(scene, room);
 
@@ -124,41 +121,47 @@ function SpaceShips() {
 
       const rotateAngle = 1;
       const rotateRadian = rotateAngle * (Math.PI / 180);
-      const camera = scene.getCameraByName('camera') as ArcRotateCamera; // singular camera follows current player
+      const camera = scene.getCameraByName('camera') as ArcRotateCamera;
 
       scene.registerBeforeRender(() => {
-
         for (const sessionId in spaceCrafts) {
           const currentPlayer = sessionId === room.sessionId;
 
           if (inputMap[sessionId]['w']) {
             spaceCrafts[sessionId].forEach((mesh: AbstractMesh) => {
               mesh.moveWithCollisions(mesh.forward.scaleInPlace(-0.2));
-              if (currentPlayer) camera.lockedTarget = mesh;
+              if (currentPlayer) {
+                camera.lockedTarget = mesh;
+              }
             });
           } else if (inputMap[sessionId]['s']) {
             spaceCrafts[sessionId].forEach((mesh: AbstractMesh) => {
               mesh.moveWithCollisions(mesh.forward.scaleInPlace(0.2));
-              if (currentPlayer) camera.lockedTarget = mesh;
+              if (currentPlayer) {
+                camera.lockedTarget = mesh;
+              }
             });
           }
           if (inputMap[sessionId]['a']) {
             spaceCrafts[sessionId].forEach((mesh: AbstractMesh) => {
               mesh.rotate(Vector3.Up(), -Math.abs(rotateRadian));
             });
-            if (currentPlayer) camera.alpha += rotateRadian;
-
+            if (currentPlayer) {
+              camera.alpha += rotateRadian;
+            }
           } else if (inputMap[sessionId]['d']) {
             spaceCrafts[sessionId].forEach((mesh: AbstractMesh) => {
               mesh.rotate(Vector3.Up(), rotateRadian);
             });
-            if (currentPlayer) camera.alpha -= rotateRadian;
+            if (currentPlayer) {
+              camera.alpha -= rotateRadian;
+            }
           }
         }
-
       });
 
       return () => {
+        // cleanup spaceCrafts
         for (const sessionId in spaceCrafts) {
           spaceCrafts[sessionId].forEach((mesh: AbstractMesh) => {
             mesh.dispose();
