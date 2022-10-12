@@ -40,14 +40,12 @@ function SpaceShip({ sessionId, playerState }: SpaceShipProps) {
 
     scene.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnKeyDownTrigger, (e: ActionEvent) => {
       inputMap[e.sourceEvent.key as keyof KeyInput] = e.sourceEvent.type == 'keydown';
+      room.send('key_input', inputMap);
     }));
     scene.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnKeyUpTrigger, (e: ActionEvent) => {
       inputMap[e.sourceEvent.key as keyof KeyInput] = e.sourceEvent.type == 'keydown';
-    }));
-
-    scene.registerBeforeRender(() => {
       room.send('key_input', inputMap);
-    });
+    }));
   }
 
   useEffect(() => {
