@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { RoomContext } from '../contexts/roomContext';
-import { CameraState, PlayerState } from '../../schemas';
-import SceneContainer, { useScene } from 'babylonjs-hook';
+import SceneContainer from 'babylonjs-hook';
 import Planets from './Planets';
-import SpaceShip from './SpaceShip';
+import SpaceShip from './SpaceShips';
 import {
   Scene,
   Vector3,
@@ -16,26 +15,14 @@ import {
   StandardMaterial,
   CubeTexture,
   Texture,
-  ActionManager
 } from '@babylonjs/core';
 
 function SceneComponent() {
 
   const roomCtx = useContext(RoomContext);
 
-  type PlayerInfo = {
-    sessionId: string,
-    player: PlayerState
-  }
-
   const { state, sessionId } = roomCtx!.room!;
   const cameraState = state.cameras.get(sessionId)!;
-
-  const playerArr: PlayerInfo[] = [];
-
-  state.players.forEach((player: PlayerState, sessionId: string) => {
-    playerArr.push({ player, sessionId });
-  });
 
   const onSceneReady = (scene: Scene) => {
     scene.clearColor = new Color4(0, 0, 0, 1);
@@ -64,21 +51,9 @@ function SceneComponent() {
     skyBox.material = skyMaterial;
 
     const canvas = scene.getEngine().getRenderingCanvas();
+
     camera.attachControl(canvas, true);
-
-    scene.actionManager = new ActionManager(scene);
   }
-
-  const spaceShips = playerArr.map((info: PlayerInfo, i: number) => {
-    console.log('index:', i)
-    return (
-      <SpaceShip
-        key={i}
-        sessionId={info.sessionId}
-        playerState={info.player}
-      />
-    );
-  });
 
   return (
     <SceneContainer
@@ -88,7 +63,7 @@ function SceneComponent() {
       renderChildrenWhenReady
     >
       <Planets />
-      {spaceShips}
+      <SpaceShip />
     </SceneContainer>
   );
 }
