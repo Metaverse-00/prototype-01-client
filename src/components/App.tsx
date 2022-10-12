@@ -9,12 +9,15 @@ function App() {
 
   const [room, setRoom] = useState<Colyseus.Room<MainSpaceState> | null>(null);
 
+  const ENV_URL = 'https://astonishing-stroopwafel-02b744.netlify.app/.netlify/functions/env';
+
   useEffect(() => {
     (async () => {
       try {
-        const ENV_URL = 'https://astonishing-stroopwafel-02b744.netlify.app/.netlify/functions/env';
-        console.log(ENV_URL)
-        const client = new Colyseus.Client(ENV_URL);
+        const res = await fetch(ENV_URL);
+        const SERVER_URL = await res.json();
+        console.log(SERVER_URL)
+        const client = new Colyseus.Client(SERVER_URL);
         const room = await client.joinOrCreate<MainSpaceState>('main_space', { name: 'player' });
         room.onStateChange(() => setRoom(room));
       } catch (err) {
