@@ -23,7 +23,7 @@ function Controls() {
   const room = roomCtx!.room!;
 
   const [buttons, setButtons] = useState<Button[]>([]);
-  const [isLandscape, setIsLandscape] = useState<boolean>(false);
+  const [isLandscape, setIsLandscape] = useState<boolean>(window.innerWidth > window.innerHeight);
 
   const mobileMax = useMediaQuery('(max-width: 900px)');
   const mobileMin = useMediaQuery('(min-width: 480px)');
@@ -105,7 +105,7 @@ function Controls() {
     const orientationHandler = () => {
       setIsLandscape(window.innerWidth > window.innerHeight);
     }
-    
+
     if (window.screen.orientation) {
       window.screen.orientation.onchange = orientationHandler;
     } else {
