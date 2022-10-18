@@ -23,12 +23,11 @@ function Controls() {
   const room = roomCtx!.room!;
 
   const [buttons, setButtons] = useState<Button[]>([]);
+  const [isLandscape, setIsLandscape] = useState<boolean>(false);
 
   const mobileMax = useMediaQuery('(max-width: 900px)');
   const mobileMin = useMediaQuery('(min-width: 480px)');
   const isMobile = mobileMax && mobileMin;
-
-  const isLandscape = window.innerWidth > window.innerHeight;
 
   const createMobileInputs = () => {
     const plane = AdvancedDynamicTexture.CreateFullscreenUI('plane');
@@ -101,6 +100,26 @@ function Controls() {
     s: false,
     d: false,
   };
+
+  useEffect(() => {
+    const orientationHandler = () => {
+      setIsLandscape(window.innerWidth > window.innerHeight);
+    }
+    
+    if (window.screen.orientation) {
+      window.screen.orientation.onchange = orientationHandler;
+    } else {
+      window.addEventListener('orientationchange', orientationHandler);
+    }
+
+    return () => {
+      if (window.screen.orientation) {
+        window.screen.orientation.removeEventListener('change', orientationHandler);
+      } else {
+        window.removeEventListener('orientationchange', orientationHandler);
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (scene) {
