@@ -28,8 +28,7 @@ function Controls() {
   const mobileMin = useMediaQuery('(min-width: 480px)');
   const isMobile = mobileMax && mobileMin;
 
-  const orientation = window.screen.orientation.type;
-  const isLandscape = orientation === 'landscape-primary' || orientation === 'landscape-secondary';
+  const isLandscape = window.innerWidth > window.innerHeight;
 
   const createMobileInputs = () => {
     const plane = AdvancedDynamicTexture.CreateFullscreenUI('plane');
@@ -160,7 +159,7 @@ function Controls() {
     } else {
       buttons.forEach((btn: Button) => btn.dispose());
     }
-  }, [isMobile, orientation]);
+  }, [isMobile, isLandscape]);
 
   return null;
 }
