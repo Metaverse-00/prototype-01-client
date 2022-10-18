@@ -102,16 +102,16 @@ function Controls() {
   };
 
   useEffect(() => {
-    const orientationHandler = (e: Event) => {
-      const orientation = (e.currentTarget as Window).screen.orientation;
-      const isLandscape = orientation.type === 'landscape-primary' || orientation.type === 'landscape-secondary';
-      setIsLandscape(isLandscape);
+    const media = window.matchMedia('(orientation: landscape)');
+    
+    const changeHandler = (e: MediaQueryListEvent) => {
+      setIsLandscape(e.matches);
     }
 
-    window.addEventListener('orientationchange', orientationHandler);
+    media.addEventListener('change', changeHandler)
 
     return () => {
-      window.removeEventListener('orientationchange', orientationHandler);
+      media.removeEventListener('change', changeHandler);
     }
   }, []);
 
