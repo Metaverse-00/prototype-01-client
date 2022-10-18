@@ -50,7 +50,7 @@ function Controls() {
     grid.addRowDefinition(.5);
 
     container.addControl(grid);
-    
+
     const leftBtn = Button.CreateImageOnlyButton('leftBtn', 'assets/images/arrow-up.svg');
     leftBtn.thickness = 0;
     leftBtn.rotation = -Math.PI / 2;
@@ -102,22 +102,16 @@ function Controls() {
   };
 
   useEffect(() => {
-    const orientationHandler = () => {
-      setIsLandscape(window.innerWidth > window.innerHeight);
+    const orientationHandler = (e: Event) => {
+      const orientation = (e.currentTarget as Window).screen.orientation;
+      const isLandscape = orientation.type === 'landscape-primary' || orientation.type === 'landscape-secondary';
+      setIsLandscape(isLandscape);
     }
 
-    if (window.screen.orientation) {
-      window.screen.orientation.onchange = orientationHandler;
-    } else {
-      window.addEventListener('orientationchange', orientationHandler);
-    }
+    window.addEventListener('orientationchange', orientationHandler);
 
     return () => {
-      if (window.screen.orientation) {
-        window.screen.orientation.removeEventListener('change', orientationHandler);
-      } else {
-        window.removeEventListener('orientationchange', orientationHandler);
-      }
+      window.removeEventListener('orientationchange', orientationHandler);
     }
   }, []);
 
