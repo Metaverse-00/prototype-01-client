@@ -38,7 +38,7 @@ function Controls() {
     container.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM;
     container.height = 0.4;
     container.width = 0.35;
-    container.top = '-2%';
+    container.top = '-8%';
     container.thickness = 0;
 
     plane.addControl(container);
@@ -119,6 +119,7 @@ function Controls() {
 
   useEffect(() => {
     if (isMobile && isLandscape) {
+      console.log(isLandscape)
       const [upBtn, downBtn, leftBtn, rightBtn] = createMobileInputs();
 
       upBtn.onPointerDownObservable.add(() => {
@@ -157,6 +158,7 @@ function Controls() {
         room.send('key_input', inputMap);
       });
     } else {
+      console.log(isLandscape)
       buttons.forEach((btn: Button) => btn.dispose());
     }
   }, [isMobile, isLandscape]);
