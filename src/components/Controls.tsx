@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useScene } from 'babylonjs-hook';
 import { RoomContext } from '../contexts/roomContext';
 import useMediaQuery from '../hooks/useMediaQuery';
@@ -22,9 +22,14 @@ function Controls() {
   const roomCtx = useContext(RoomContext);
   const room = roomCtx!.room!;
 
+  const [buttons, setButtons] = useState<Button[]>([]);
+
   const mobileMax = useMediaQuery('(max-width: 900px)');
   const mobileMin = useMediaQuery('(min-width: 480px)');
   const isMobile = mobileMax && mobileMin;
+
+  const orientation = window.screen.orientation.type;
+  const isLandscape = orientation === 'landscape-primary' || orientation === 'landscape-secondary';
 
   const createMobileInputs = () => {
     const plane = AdvancedDynamicTexture.CreateFullscreenUI('plane');
@@ -47,7 +52,7 @@ function Controls() {
     grid.addRowDefinition(.5);
 
     container.addControl(grid);
-
+    
     const leftBtn = Button.CreateImageOnlyButton('leftBtn', 'assets/images/arrow-up.svg');
     leftBtn.thickness = 0;
     leftBtn.rotation = -Math.PI / 2;
@@ -85,7 +90,10 @@ function Controls() {
     grid.addControl(upBtn, 0, 1);
     grid.addControl(downBtn, 1, 1);
 
-    return [upBtn, downBtn, leftBtn, rightBtn];
+    const buttons = [upBtn, downBtn, leftBtn, rightBtn];
+    setButtons(buttons);
+
+    return buttons;
   }
 
   const inputMap: KeyInput = {
@@ -111,7 +119,7 @@ function Controls() {
   }, [scene]);
 
   useEffect(() => {
-    if (isMobile) {
+    if (isMobile && isLandscape) {
       const [upBtn, downBtn, leftBtn, rightBtn] = createMobileInputs();
 
       upBtn.onPointerDownObservable.add(() => {
@@ -149,8 +157,10 @@ function Controls() {
         inputMap.d = false;
         room.send('key_input', inputMap);
       });
+    } else {
+      buttons.forEach((btn: Button) => btn.dispose());
     }
-  }, [isMobile]);
+  }, [isMobile, orientation]);
 
   return null;
 }
