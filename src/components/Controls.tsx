@@ -22,7 +22,9 @@ function Controls() {
   const roomCtx = useContext(RoomContext);
   const room = roomCtx!.room!;
 
-  const isMobile = useMediaQuery('(max-width: 900px)');
+  const mobileMax = useMediaQuery('(max-width: 900px)');
+  const mobileMin = useMediaQuery('(min-width: 480px)');
+  const isMobile = mobileMax && mobileMin;
 
   const createMobileInputs = () => {
     const plane = AdvancedDynamicTexture.CreateFullscreenUI('plane');
