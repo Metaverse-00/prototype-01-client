@@ -5,6 +5,7 @@ import { RoomContext } from '../contexts/roomContext';
 import SceneComponent from './SceneComponent';
 import Backdrop from './Backdrop';
 import config from '../utils/url.json';
+import Chat from './Chat';
 
 function App() {
 
@@ -34,11 +35,14 @@ function App() {
 
   return (
     <RoomContext.Provider value={{ room }}>
-      {room ?
-        <SceneComponent />
-        :
-        <Backdrop />
-      }
+      <div className='main-container'>
+        {room ?
+          <SceneComponent />
+          :
+          <Backdrop />
+        }
+        <Chat />
+      </div>
     </RoomContext.Provider>
   );
 }
