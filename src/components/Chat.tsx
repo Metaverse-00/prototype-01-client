@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Channel, DefaultGenerics, StreamChat } from 'stream-chat';
-import 'stream-chat-react/dist/css/v2/index.css';
+import '../chat.css';
 import {
   Chat as ChatContainer,
   Channel as ChannelContainer,
-  ChannelHeader,
   MessageInput,
   MessageList,
   Thread,
@@ -41,7 +40,6 @@ function Chat() {
         <ChatContainer client={client} theme='str-chat__theme-dark'>
           <ChannelContainer channel={channel}>
             <Window>
-              <ChannelHeader />
               <MessageList />
               <MessageInput />
             </Window>

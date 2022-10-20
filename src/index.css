@@ -40,9 +40,10 @@ canvas {
 
 .chat-wrapper {
   position: absolute;
-  top: 0;
   right: 0;
-  width: 20%;
-  height: 100%;
+  bottom: 0;
+  width: 40%;
+  height: 35%;
+  padding: 1rem;
   background-color: transparent;
 }
