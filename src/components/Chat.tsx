@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { RoomContext } from '../contexts/roomContext';
 import { Channel, DefaultGenerics, StreamChat } from 'stream-chat';
 import '../chat.css';
 import {
@@ -12,11 +13,16 @@ import {
 
 function Chat() {
 
+  const roomCtx = useContext(RoomContext);
+  const { state, sessionId } = roomCtx!.room!;
+
   const [client, setClient] = useState<StreamChat<DefaultGenerics>>();
   const [channel, setChannel] = useState<Channel<DefaultGenerics>>();
 
+  const { id } = state.players.get(sessionId)!;
   const user = {
-    id: 'player'
+    id,
+    name: `player_${id}`
   }
 
   useEffect(() => {
@@ -24,9 +30,8 @@ function Chat() {
       const client = StreamChat.getInstance('azsx7wv8sqyz');
       await client.connectUser(user, client.devToken(user.id));
 
-      const channel = client.channel('messaging', 'chat', {
-        members: [user.id]
-      });
+      const channel = client.channel('messaging', 'chat');
+      await channel.addMembers([user.id]);
       await channel.watch();
 
       setClient(client);

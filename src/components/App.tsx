@@ -18,7 +18,7 @@ function App() {
         const SERVER_URL = await res.json();
         const client = new Colyseus.Client(SERVER_URL);
 
-        const room = await client.joinOrCreate<MainSpaceState>('main_space', { name: 'player' });
+        const room = await client.joinOrCreate<MainSpaceState>('main_space');
         room.onStateChange(() => {
           // clone room instance to cause re-render
           const roomClone = Object.create(
@@ -37,11 +37,13 @@ function App() {
     <RoomContext.Provider value={{ room }}>
       <div className='main-container'>
         {room ?
-          <SceneComponent />
+          <>
+            <SceneComponent />
+            <Chat />
+          </>
           :
           <Backdrop />
         }
-        <Chat />
       </div>
     </RoomContext.Provider>
   );
