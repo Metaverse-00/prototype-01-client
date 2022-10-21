@@ -22,7 +22,8 @@ function Chat() {
   const { id } = state.players.get(sessionId)!;
   const user = {
     id,
-    name: `player_${id}`
+    name: `player_${id}`,
+    image: `assets/images/player_${id}.png`
   }
 
   useEffect(() => {
