@@ -8,6 +8,7 @@ import {
   ExecuteCodeAction,
   ActionEvent,
 } from '@babylonjs/core';
+import { MobileContext } from '../contexts/mobileContext';
 
 type KeyInput = {
   w: boolean,
@@ -22,12 +23,10 @@ function Controls() {
   const roomCtx = useContext(RoomContext);
   const room = roomCtx!.room!;
 
-  const [buttons, setButtons] = useState<Button[]>([]);
-  const [isLandscape, setIsLandscape] = useState<boolean>(window.innerWidth > window.innerHeight);
+  const moblieCtx = useContext(MobileContext)!;
+  const { isMobileLandscape, isLandscape } = moblieCtx;
 
-  const mobileMax = window.matchMedia('(max-width: 900px)').matches;
-  const mobileMin = window.matchMedia('(min-width: 480px)').matches;
-  const isMobile = mobileMax && mobileMin;
+  const [buttons, setButtons] = useState<Button[]>([]);
 
   const createMobileInputs = () => {
     const plane = AdvancedDynamicTexture.CreateFullscreenUI('plane');
@@ -102,20 +101,6 @@ function Controls() {
   };
 
   useEffect(() => {
-    const media = window.matchMedia('(orientation: landscape)');
-    
-    const changeHandler = (e: MediaQueryListEvent) => {
-      setIsLandscape(e.matches);
-    }
-
-    media.addEventListener('change', changeHandler)
-
-    return () => {
-      media.removeEventListener('change', changeHandler);
-    }
-  }, []);
-
-  useEffect(() => {
     if (scene) {
       scene.actionManager = new ActionManager(scene);
 
@@ -131,7 +116,7 @@ function Controls() {
   }, [scene]);
 
   useEffect(() => {
-    if (isMobile && isLandscape) {
+    if (isMobileLandscape && isLandscape) {
       const [upBtn, downBtn, leftBtn, rightBtn] = createMobileInputs();
 
       upBtn.onPointerDownObservable.add(() => {
@@ -172,7 +157,7 @@ function Controls() {
     } else {
       buttons.forEach((btn: Button) => btn.dispose());
     }
-  }, [isMobile, isLandscape]);
+  }, [isMobileLandscape, isLandscape]);
 
   return null;
 }
